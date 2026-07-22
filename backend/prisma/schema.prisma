@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id
+  name         String
+  email        String    @unique
+  passwordHash String    @map("password_hash")
+  avatar       String    @default("")
+  bio          String    @default("")
+  plan         String    @default("hacker")
+  createdAt      DateTime   @default(now()) @map("created_at")
+  updatedAt      DateTime   @updatedAt @map("updated_at")
+  resetToken     String?    @unique @map("reset_token")
+  resetTokenExp  DateTime?  @map("reset_token_exp")
+
+  links    Link[]
+  tags     Tag[]
+  apiKeys  ApiKey[]
+
+  @@map("users")
+}
+
+model Link {
+  id           String    @id
+  userId       String    @map("user_id")
+  originalUrl  String    @map("original_url")
+  slug         String    @unique
+  title        String?
+  passwordHash String?   @map("password_hash")
+  expiresAt    DateTime? @map("expires_at")
+  redirectType String    @default("301") @map("redirect_type")
+  utmSource    String?   @map("utm_source")
+  utmMedium    String?   @map("utm_medium")
+  utmCampaign  String?   @map("utm_campaign")
+  utmTerm      String?   @map("utm_term")
+  utmContent   String?   @map("utm_content")
+  status       String    @default("Active")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  clicks   Click[]
+  linkTags LinkTag[]
+
+  @@index([userId])
+  @@index([slug])
+  @@map("links")
+}
+
+model Tag {
+  id     String @id
+  name   String
+  userId String @map("user_id")
+
+  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  linkTags LinkTag[]
+
+  @@unique([name, userId])
+  @@map("tags")
+}
+
+model LinkTag {
+  linkId String @map("link_id")
+  tagId  String @map("tag_id")
+
+  link Link @relation(fields: [linkId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([linkId, tagId])
+  @@index([linkId])
+  @@index([tagId])
+  @@map("link_tags")
+}
+
+model Click {
+  id        String   @id
+  linkId    String   @map("link_id")
+  ip        String?
+  userAgent String?  @map("user_agent")
+  referrer  String?
+  country   String?
+  city      String?
+  device    String?
+  browser   String?
+  os        String?
+  clickedAt DateTime @default(now()) @map("clicked_at")
+
+  link Link @relation(fields: [linkId], references: [id], onDelete: Cascade)
+
+  @@index([linkId])
+  @@index([clickedAt])
+  @@map("clicks")
+}
+
+model ApiKey {
+  id         String    @id
+  userId     String    @map("user_id")
+  name       String
+  keyHash    String    @map("key_hash")
+  prefix     String
+  lastUsedAt DateTime? @map("last_used_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("api_keys")
+}
