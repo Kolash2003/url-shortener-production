@@ -1,5 +1,7 @@
 const API_BASE = "http://localhost:3001/api/v1";
 
+export { API_BASE };
+
 export function getToken(): string | null {
   return localStorage.getItem("snipdev_auth_token");
 }

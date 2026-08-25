@@ -19,6 +19,7 @@ interface AuthState {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   signup: (name: string, email: string, password: string) => Promise<void>;
+  completeOAuth: (token: string) => Promise<void>;
   logout: () => void;
   updateProfile: (updates: Partial<User>) => Promise<void>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
@@ -93,6 +94,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     persist(parseUser(data));
   };
 
+  const completeOAuth = useCallback(async (token: string) => {
+    setToken(token);
+    const data = await api.get<{ success: boolean; user: User }>("/auth/me");
+    persist(parseUser(data));
+  }, [persist]);
+
   const logout = () => {
     setToken(null);
     persist(null);
@@ -122,6 +129,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isLoading,
         login,
         signup,
+        completeOAuth,
         logout,
         updateProfile,
         changePassword,

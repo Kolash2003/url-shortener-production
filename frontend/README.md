@@ -72,7 +72,3 @@ src/
 ├── pages/              # Route-level page components
 └── lib/                # Utility functions
 ```
-
-## License
-
-MIT

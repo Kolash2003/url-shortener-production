@@ -12,6 +12,7 @@ import MyLinks from "./pages/MyLinks";
 import CreateLink from "./pages/CreateLink";
 import LinkAnalytics from "./pages/LinkAnalytics";
 import Auth from "./pages/Auth";
+import AuthCallback from "./pages/AuthCallback";
 // import ApiAccess from "./pages/ApiAccess";
 import Pricing from "./pages/Pricing";
 import Settings from "./pages/Settings";
@@ -32,6 +33,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="/pricing" element={<Pricing />} />
 
               {/* Protected Dashboard Routes */}

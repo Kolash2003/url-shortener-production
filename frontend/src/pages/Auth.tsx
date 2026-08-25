@@ -10,6 +10,11 @@ import { cn } from "@/lib/utils";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
+import { API_BASE } from "@/lib/api";
+
+const startOAuth = (provider: "google" | "github") => {
+  window.location.href = `${API_BASE}/auth/${provider}`;
+};
 
 const loginSchema = z.object({
   email: z.string().min(1, "Email is required").email("Invalid email address"),
@@ -337,14 +342,14 @@ const Auth = () => {
                 <Button
                   variant="outline"
                   className="flex-1 gap-2 font-mono text-xs h-9"
-                  onClick={() => toast.info("OAuth sign-in coming soon")}
+                  onClick={() => startOAuth("github")}
                 >
                   <GitHubIcon /> GitHub
                 </Button>
                 <Button
                   variant="outline"
                   className="flex-1 gap-2 font-mono text-xs h-9"
-                  onClick={() => toast.info("OAuth sign-in coming soon")}
+                  onClick={() => startOAuth("google")}
                 >
                   <GoogleIcon /> Google
                 </Button>
@@ -485,14 +490,14 @@ const Auth = () => {
                 <Button
                   variant="outline"
                   className="flex-1 gap-2 font-mono text-xs h-9"
-                  onClick={() => toast.info("OAuth sign-in coming soon")}
+                  onClick={() => startOAuth("github")}
                 >
                   <GitHubIcon /> GitHub
                 </Button>
                 <Button
                   variant="outline"
                   className="flex-1 gap-2 font-mono text-xs h-9"
-                  onClick={() => toast.info("OAuth sign-in coming soon")}
+                  onClick={() => startOAuth("google")}
                 >
                   <GoogleIcon /> Google
                 </Button>
