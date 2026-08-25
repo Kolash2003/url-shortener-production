@@ -145,7 +145,15 @@ export async function exchangeGithubCode(code: string): Promise<OAuthProfile> {
 
 export async function findOrCreateOAuthUser(profile: OAuthProfile) {
   const existing = await prisma.user.findUnique({ where: { email: profile.email } });
-  if (existing) return existing;
+  if (existing) {
+    if (existing.provider !== profile.provider) {
+      return prisma.user.update({
+        where: { id: existing.id },
+        data: { provider: profile.provider, avatar: profile.avatar },
+      });
+    }
+    return existing;
+  }
 
   return prisma.user.create({
     data: {
@@ -153,6 +161,7 @@ export async function findOrCreateOAuthUser(profile: OAuthProfile) {
       name: profile.name,
       email: profile.email,
       passwordHash: "",
+      provider: profile.provider,
       avatar: profile.avatar,
     },
   });

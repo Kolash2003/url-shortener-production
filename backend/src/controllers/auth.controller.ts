@@ -34,6 +34,7 @@ export async function register(req: Request, res: Response, next: NextFunction) 
         email,
         avatar,
         bio: "",
+        provider: "local",
         plan: "hacker",
         createdAt: new Date().toISOString().split("T")[0],
         linksCreated: 0,
@@ -78,6 +79,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
         email: user.email,
         avatar: user.avatar,
         bio: user.bio,
+        provider: user.provider,
         plan: user.plan,
         createdAt: user.createdAt.toISOString().split("T")[0],
         linksCreated: linksCount,
@@ -95,7 +97,7 @@ export async function getMe(req: Request, res: Response, next: NextFunction) {
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { id: true, name: true, email: true, avatar: true, bio: true, plan: true, createdAt: true },
+      select: { id: true, name: true, email: true, avatar: true, bio: true, provider: true, plan: true, createdAt: true },
     });
 
     if (!user) {
@@ -118,6 +120,7 @@ export async function getMe(req: Request, res: Response, next: NextFunction) {
         email: user.email,
         avatar: user.avatar,
         bio: user.bio,
+        provider: user.provider,
         plan: user.plan,
         createdAt: user.createdAt.toISOString().split("T")[0],
         linksCreated: linksCount,
@@ -137,7 +140,10 @@ export async function updateProfile(req: Request, res: Response, next: NextFunct
     const data: Record<string, string> = {};
     if (name !== undefined) {
       data.name = name;
-      data.avatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0891b2&color=fff&bold=true&size=128`;
+      const user = await prisma.user.findUnique({ where: { id: userId }, select: { provider: true } });
+      if (user?.provider === "local") {
+        data.avatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0891b2&color=fff&bold=true&size=128`;
+      }
     }
     if (bio !== undefined) {
       data.bio = bio;

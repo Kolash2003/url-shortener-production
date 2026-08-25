@@ -14,6 +14,7 @@ model User {
   passwordHash String    @map("password_hash")
   avatar       String    @default("")
   bio          String    @default("")
+  provider     String    @default("local")
   plan         String    @default("hacker")
   createdAt      DateTime   @default(now()) @map("created_at")
   updatedAt      DateTime   @updatedAt @map("updated_at")
