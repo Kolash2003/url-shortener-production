@@ -7,6 +7,7 @@ export interface User {
   email: string;
   avatar: string;
   bio: string;
+  provider: "local" | "google" | "github";
   plan: "hacker" | "builder" | "scale";
   createdAt: string;
   linksCreated: number;
@@ -41,6 +42,7 @@ function parseUser(data: { user: User }): User {
     email: data.user.email,
     avatar: data.user.avatar,
     bio: data.user.bio || "",
+    provider: data.user.provider || "local",
     plan: data.user.plan as User["plan"],
     createdAt: data.user.createdAt,
     linksCreated: data.user.linksCreated,

@@ -10,8 +10,13 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
-import { Link2, BarChart3, Calendar, Github, Globe, Loader2, Pencil, Check } from "lucide-react";
+import { Link2, BarChart3, Calendar, Github, Globe, Loader2, Pencil, Check, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
+import { API_BASE } from "@/lib/api";
+
+const startOAuth = (provider: "google" | "github") => {
+  window.location.href = `${API_BASE}/auth/${provider}`;
+};
 
 const Profile = () => {
   const { user, updateProfile } = useAuth();
@@ -193,17 +198,29 @@ const Profile = () => {
                       </div>
                       <div>
                         <p className="text-xs font-heading text-foreground">GitHub</p>
-                        <p className="text-[11px] font-mono text-muted-foreground">Not connected</p>
+                        {user.provider === "github" ? (
+                          <p className="text-[11px] font-mono text-primary flex items-center gap-1">
+                            <CheckCircle2 size={11} /> Connected
+                          </p>
+                        ) : (
+                          <p className="text-[11px] font-mono text-muted-foreground">Not connected</p>
+                        )}
                       </div>
                     </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="font-mono text-[11px]"
-                      onClick={() => toast.info("OAuth connection coming soon")}
-                    >
-                      Connect
-                    </Button>
+                    {user.provider === "github" ? (
+                      <Badge variant="outline" className="font-mono text-[10px] text-primary border-primary/30 bg-primary/10">
+                        Connected
+                      </Badge>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="font-mono text-[11px]"
+                        onClick={() => startOAuth("github")}
+                      >
+                        Connect
+                      </Button>
+                    )}
                   </div>
                   <Separator className="bg-border" />
                   <div className="flex items-center justify-between">
@@ -213,17 +230,29 @@ const Profile = () => {
                       </div>
                       <div>
                         <p className="text-xs font-heading text-foreground">Google</p>
-                        <p className="text-[11px] font-mono text-muted-foreground">Not connected</p>
+                        {user.provider === "google" ? (
+                          <p className="text-[11px] font-mono text-primary flex items-center gap-1">
+                            <CheckCircle2 size={11} /> Connected
+                          </p>
+                        ) : (
+                          <p className="text-[11px] font-mono text-muted-foreground">Not connected</p>
+                        )}
                       </div>
                     </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="font-mono text-[11px]"
-                      onClick={() => toast.info("OAuth connection coming soon")}
-                    >
-                      Connect
-                    </Button>
+                    {user.provider === "google" ? (
+                      <Badge variant="outline" className="font-mono text-[10px] text-primary border-primary/30 bg-primary/10">
+                        Connected
+                      </Badge>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="font-mono text-[11px]"
+                        onClick={() => startOAuth("google")}
+                      >
+                        Connect
+                      </Button>
+                    )}
                   </div>
                 </div>
               </Card>
